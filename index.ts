@@ -1,5 +1,5 @@
 import { Application, Assets, Sprite, Container } from 'pixi.js';
-import { Machine } from "./src/Machine";
+import { Machine } from "./src/Machine/Machine";
 import { urls } from "./img";
 import { SpinButton } from "./src/SpinButton";
 
@@ -18,13 +18,8 @@ class MainScene extends Container {
         const background = Sprite.from('background');
         this.addChild(background);
 
-        const reels = Sprite.from('reels_base');
-        reels.anchor.set(0.5);
-        reels.position.set(screen.width * 0.5, screen.height * 0.5);
-        this.addChild(reels);
-
         const machine = new Machine();
-        machine.position.set(screen.width * 0.5 - reels.width * 0.5, screen.height * 0.5 - reels.height * 0.5);
+        machine.position.set(screen.width * 0.5, screen.height * 0.5);
         this.addChild(machine);
 
         const spinButton = new SpinButton();

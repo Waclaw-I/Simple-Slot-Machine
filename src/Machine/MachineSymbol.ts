@@ -11,9 +11,13 @@ export class MachineSymbol extends Container {
         super();
 
         this.image = Sprite.from(textureKey);
-        this.image.x = x;
-        this.image.y = y;
+        this.x = x;
+        this.y = y;
         this.image.anchor.set(0.5);
         this.addChild(this.image);
+    }
+
+    public setTexture(textureKey: string): void {
+        this.image.texture = Sprite.from(textureKey).texture;
     }
 }

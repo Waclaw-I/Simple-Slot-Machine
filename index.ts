@@ -2,11 +2,9 @@ import { Application, Assets, Sprite, Container } from 'pixi.js';
 import { Machine } from "./src/Machine/Machine";
 import { urls } from "./img";
 import { SpinButton } from "./src/SpinButton";
+import { GLOBALS } from './src/Globals';
 
-const screen = {
-    width: 1920,
-    height: 1080
-};
+const screen = GLOBALS.SCREEN;
 
 class MainScene extends Container {
     private _machine: Machine;

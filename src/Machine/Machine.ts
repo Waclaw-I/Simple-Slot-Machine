@@ -1,14 +1,21 @@
 import {Container, Graphics, Sprite} from "pixi.js";
 import { Reel } from './Reel';
-import { GLOBALS } from '../Globals';
+import { GLOBALS, MachineSymbols } from '../globals';
+import { wait } from '../utils';
+
+export enum MachineState {
+    Idle = 'idle',
+    Spinning = 'spinning',
+    ShowingResults = 'showingResults',
+}
 
 export class Machine extends Container {
 
     private reelsBackground: Sprite;
-
     private reels: Reel[];
-
     private reelsMask: Graphics;
+
+    private state: MachineState = MachineState.Idle;
 
     constructor() {
         super();
@@ -22,6 +29,24 @@ export class Machine extends Container {
         this.reels.forEach(reel => {
             reel.update(dt);
         })
+    }
+
+    public async spin(outcome: MachineSymbols[][]): Promise<void> {
+        console.log(outcome);
+        if (this.state === MachineState.Spinning) {
+            return;
+        }
+        this.state = MachineState.Spinning;
+        for (let i = 0; i < 5; i++) {
+            (async () => {
+                await this.reels[i].startSpinning(outcome[i]);
+                await wait(1500);
+                this.reels[i].beginStoppingSpin();
+            })();
+            await wait(50);
+        }
+        // either show results or idle if there were no winning symbols
+        this.state = MachineState.ShowingResults;
     }
 
     private initializeReelsBackground(): void {

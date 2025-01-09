@@ -1,4 +1,5 @@
 
+export type MachineSymbols = 'high1' | 'high2' | 'high3' | 'low1' | 'low2' | 'low3' | 'low4';
 type Globals = Readonly<{
     SCREEN: Readonly<{
         width: number,
@@ -8,7 +9,7 @@ type Globals = Readonly<{
     SYMBOL_HEIGHT: number,
     REEL_SYMBOL_SPACING: number;
     REEL_X_POS: number[],
-    SYMBOLS: string[],
+    SYMBOLS: MachineSymbols[],
 }>;
 
 export const GLOBALS: Globals = {
@@ -18,7 +19,7 @@ export const GLOBALS: Globals = {
     },
     SYMBOL_WIDTH: 320,
     SYMBOL_HEIGHT: 320,
-    REEL_SYMBOL_SPACING: 175,
+    REEL_SYMBOL_SPACING: 190,
     REEL_X_POS: [
         -400,
         -200,

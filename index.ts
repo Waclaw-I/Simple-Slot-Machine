@@ -1,14 +1,15 @@
 import { Application, Assets, Sprite, Container } from 'pixi.js';
 import { Machine } from "./src/Machine/Machine";
 import { urls } from "./img";
-import { SpinButton } from "./src/SpinButton";
-import { GLOBALS } from './src/Globals';
+import { SpinButton, SpinButtonEvent } from "./src/SpinButton";
+import { GLOBALS } from './src/globals';
+import { Outcome } from './src/Outcome';
 
 const screen = GLOBALS.SCREEN;
 
 class MainScene extends Container {
-    private _machine: Machine;
-    private _spinButton: SpinButton;
+    private machine: Machine;
+    private spinButton: SpinButton;
 
     constructor() {
         super();
@@ -16,21 +17,26 @@ class MainScene extends Container {
         const background = Sprite.from('background');
         this.addChild(background);
 
-        const machine = new Machine();
-        machine.position.set(screen.width * 0.5, screen.height * 0.5);
-        this.addChild(machine);
+        this.machine = new Machine();
+        this.machine.position.set(screen.width * 0.5, screen.height * 0.5);
+        this.addChild(this.machine);
 
-        const spinButton = new SpinButton();
-        spinButton.position.set(screen.width * 0.85, screen.height * 0.85);
-        this.addChild(spinButton);
+        this.spinButton = new SpinButton();
+        this.spinButton.position.set(screen.width * 0.85, screen.height * 0.85);
+        this.addChild(this.spinButton);
 
-        this._machine = machine;
-        this._spinButton = spinButton;
+        this.bindEventHandlers();
     }
 
-    update(dt) {
-        this._machine.update(dt);
-        this._spinButton.update(dt);
+    public update(dt): void {
+        this.machine.update(dt);
+        this.spinButton.update(dt);
+    }
+
+    private bindEventHandlers(): void {
+        this.spinButton.on(SpinButtonEvent.Pressed, () => {
+            this.machine.spin(Outcome.resolve());
+        });
     }
 }
 

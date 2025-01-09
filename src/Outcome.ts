@@ -1,14 +1,14 @@
-import { GLOBALS } from './Globals';
+import { GLOBALS, MachineSymbols } from './globals';
 
 export class Outcome {
     constructor() {}
 
-    static resolve(): string[][] {
+    static resolve(): MachineSymbols[][] {
         const columns = 5;
         const rows = 3;
         const symbols = GLOBALS.SYMBOLS;
 
-        const outcome: string[][] = [];
+        const outcome: MachineSymbols[][] = [];
         for (let i = 0; i < columns; i++) {
             const column = [];
             for (let j = 0; j < rows; j++) {

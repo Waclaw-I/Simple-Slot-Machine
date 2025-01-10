@@ -31,15 +31,16 @@ export class Machine extends Container {
         })
     }
 
-    public async spin(outcome: MachineSymbols[][]): Promise<void> {
+    public async spin(outcome: MachineSymbols[][], winningResults: { x: number, y: number }[][]): Promise<void> {
         if (this.state === MachineState.Spinning) {
             return;
         }
+        console.log(winningResults);
         this.state = MachineState.Spinning;
         for (let i = 0; i < 5; i++) {
             (async () => {
                 await this.reels[i].startSpinning(outcome[i]);
-                await wait(1500);
+                await wait(500);
                 this.reels[i].beginStoppingSpin();
             })();
             await wait(50);

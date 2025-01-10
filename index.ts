@@ -2,7 +2,7 @@ import { Application, Assets, Sprite, Container } from 'pixi.js';
 import { Machine } from "./src/Machine/Machine";
 import { urls } from "./img";
 import { SpinButton, SpinButtonEvent } from "./src/SpinButton";
-import { GLOBALS } from './src/globals';
+import { GLOBALS, MachineSymbols } from './src/globals';
 import { Outcome } from './src/Outcome';
 
 const screen = GLOBALS.SCREEN;
@@ -35,8 +35,23 @@ class MainScene extends Container {
 
     private bindEventHandlers(): void {
         this.spinButton.on(SpinButtonEvent.Pressed, () => {
-            this.machine.spin(Outcome.resolve());
+            const { outcome, winningResults} = Outcome.resolve(/*this.getPredefinedSpin() */)
+            this.machine.spin(outcome, winningResults);
         });
+    }
+    
+    private getPredefinedSpin(): MachineSymbols[][] {
+        return this.transposeMatrix([
+            ["high1", "high1", "high1", "high1", "high1"],
+            // ["high1", "high1", "high1", "high1", "high1"],
+            // ["high1", "high1", "high1", "high1", "high1"],
+            ["low1", "low2", "high1", "low3", "low4"],
+            ["low1", "high1", "low4", "low4", "low4"],
+        ]);
+    }
+
+    private transposeMatrix(matrix: MachineSymbols[][]): MachineSymbols[][] {
+        return matrix[0].map((_, colIndex) => matrix.map(row => row[colIndex]));
     }
 }
 

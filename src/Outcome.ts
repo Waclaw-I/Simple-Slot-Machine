@@ -6,9 +6,12 @@ export class Outcome {
     private static readonly COLS: number = 5;
     private static readonly ROWS: number = 3;
 
-    static resolve(): MachineSymbols[][] {
+    static resolve(predefinedOutcome?: MachineSymbols[][]): { outcome: MachineSymbols[][], winningResults: { x: number, y: number }[][] } {
         const symbols = GLOBALS.SYMBOLS;
 
+        if (predefinedOutcome) {
+            return { outcome: predefinedOutcome, winningResults: this.getWinningResults(predefinedOutcome) };
+        }
         const outcome: MachineSymbols[][] = [];
         for (let x = 0; x < this.COLS; x++) {
             const column = [];
@@ -17,8 +20,7 @@ export class Outcome {
             }
             outcome.push(column);
         }
-        console.log(this.getWinningResults(outcome));
-        return outcome;
+        return { outcome, winningResults: this.getWinningResults(outcome) };
     }
 
     private static getWinningResults(outcome: MachineSymbols[][]): { x: number, y: number }[][] {
@@ -65,6 +67,45 @@ export class Outcome {
                 const diagonalLeft = checkDirection(x, y, -1, 1);
                 if (diagonalLeft) winningResults.push(diagonalLeft);
             }
+        }
+
+        const isResultWithinOtherResult = (result1: { x: number, y: number}[], result2: { x: number, y: number}[]): boolean => {
+            const subArrays: { x: number, y: number}[][] = [];
+            for (let i = 0; i < 2; i++) {
+                subArrays.push(result2.slice(i))
+            }
+            for (const subArray of subArrays) {
+                let includes = true;
+                if (result1.length > subArray.length) {
+                    continue;
+                }
+                for (let i = 0; i < result1.length; i++) {
+                    if (result1[i].x !== subArray[i].x || result1[i].y !== subArray[i].y) {
+                        includes = false;
+                        break;
+                    }
+                }
+                if (includes) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        // Remove duplicate results
+        const obsoleteResultsIndices: number[] = [];
+        for (let i = 0; i < winningResults.length; i++) {
+            for (let j = 0; j < winningResults.length; j++) {
+                if (i === j) {
+                    continue;
+                }
+                if (isResultWithinOtherResult(winningResults[i], winningResults[j])) {
+                    obsoleteResultsIndices.push(i);
+                }
+            }
+        }
+        for (let i = obsoleteResultsIndices.length - 1; i >= 0; i--) {
+            winningResults.splice(obsoleteResultsIndices[i], 1);
         }
     
         return winningResults;

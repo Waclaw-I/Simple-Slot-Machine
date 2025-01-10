@@ -32,7 +32,6 @@ export class Machine extends Container {
     }
 
     public async spin(outcome: MachineSymbols[][]): Promise<void> {
-        console.log(outcome);
         if (this.state === MachineState.Spinning) {
             return;
         }

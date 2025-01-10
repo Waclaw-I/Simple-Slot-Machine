@@ -1,0 +1,8 @@
+- Change textures for spin button
+- Simple state machine for Machine
+- detect combo in the outcome and pass this as an array of results
+- make a delay for showing the last reel i there's a chance for combo
+- add a simple ui for setting up results
+- add some particle effects for symbols
+- add money rain on bigger combos
+- add a machine background from somewhere, maybe generate it

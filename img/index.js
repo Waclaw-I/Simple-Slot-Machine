@@ -12,9 +12,11 @@ import spin_btn_down from "./spin_btn_down.png";
 import spin_btn_hover from "./spin_btn_hover.png";
 import spin_btn_over from "./spin_btn_over.png";
 import spin_btn_disabled from "./spin_btn_disabled.png";
+import machine_front from "./machine_front.png";
 
 const img = {
     reels_base,
+    machine_front,
     spin_btn_normal,
     spin_btn_down,
     spin_btn_hover,

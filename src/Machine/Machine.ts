@@ -11,6 +11,7 @@ export enum MachineState {
 
 export class Machine extends Container {
     private reelsBackground: Sprite;
+    private machineFront: Sprite;
     private reels: Reel[];
     private reelsMask: Graphics;
 
@@ -22,6 +23,13 @@ export class Machine extends Container {
         this.initializeReelsBackground();
         this.initializeReelsMask();
         this.initializeReels();
+        this.initializeMachineFront();
+
+        window.addEventListener("keydown", (event) => {
+            if (event.key === "Enter") {
+                this.reels[0].getSymbol(2).bump();
+            }
+        });
     }
 
     update(dt: number): void {
@@ -58,6 +66,15 @@ export class Machine extends Container {
         this.reelsBackground.anchor.set(0.5);
 
         this.addChild(this.reelsBackground);
+    }
+
+    private initializeMachineFront(): void {
+        this.machineFront = Sprite.from("machine_front");
+        this.machineFront.anchor.set(0.5);
+        this.machineFront.scale.set(1.025, 1.1);
+        this.machineFront.position.set(-140, -125);
+
+        this.addChild(this.machineFront);
     }
 
     private initializeReelsMask(): void {

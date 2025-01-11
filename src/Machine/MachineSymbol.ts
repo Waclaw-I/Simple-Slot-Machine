@@ -1,3 +1,4 @@
+import { gsap } from "gsap";
 import { Container, Sprite } from "pixi.js";
 
 /**
@@ -18,5 +19,21 @@ export class MachineSymbol extends Container {
 
     public setTexture(textureKey: string): void {
         this.image.texture = Sprite.from(textureKey).texture;
+    }
+
+    public async bump(): Promise<void> {
+        return new Promise<void>((resolve) => {
+            gsap.to(this.image.scale, {
+                x: 1.3,
+                y: 1.3,
+                duration: 0.5,
+                repeat: 1,
+                yoyo: true,
+                ease: "back.out"
+                // onComplete: () => {
+                //     resolve();
+                // }
+            });
+        });
     }
 }

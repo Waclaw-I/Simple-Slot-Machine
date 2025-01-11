@@ -1,10 +1,10 @@
-import { Application, Assets, Sprite, Container } from "pixi.js";
+import { Application, Assets, Container } from "pixi.js";
 import { Machine } from "./src/Machine/Machine";
 import { urls } from "./img";
 import { SpinButton, SpinButtonEvent } from "./src/SpinButton";
-import { GLOBALS, MachineSymbols } from "./src/globals";
+import { GLOBALS } from "./src/globals";
 import { Outcome } from "./src/Outcome";
-import createDebugPanel from "./src/debugPanel";
+import { createDebugPanel, getPredefinedSpin } from "./src/debugPanel";
 
 const screen = GLOBALS.SCREEN;
 
@@ -40,27 +40,11 @@ class MainScene extends Container {
                 return;
             }
             const { outcome, winningResults } =
-                Outcome.resolve(/*this.getPredefinedSpin() */);
+                Outcome.resolve(getPredefinedSpin());
             this.spinButton.lock(true);
             await this.machine.spin(outcome, winningResults);
             this.spinButton.lock(false);
         });
-    }
-
-    private getPredefinedSpin(): MachineSymbols[][] {
-        return this.transposeMatrix([
-            ["high1", "high1", "high1", "high1", "high1"],
-            // ["high1", "high1", "high1", "high1", "high1"],
-            // ["high1", "high1", "high1", "high1", "high1"],
-            ["low1", "low2", "high1", "low3", "low4"],
-            ["low1", "high1", "low4", "low4", "low4"]
-        ]);
-    }
-
-    private transposeMatrix(matrix: MachineSymbols[][]): MachineSymbols[][] {
-        return matrix[0].map((_, colIndex) =>
-            matrix.map((row) => row[colIndex])
-        );
     }
 }
 

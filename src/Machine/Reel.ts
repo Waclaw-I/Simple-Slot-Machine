@@ -1,11 +1,10 @@
-import { Container } from 'pixi.js';
-import { MachineSymbol } from './MachineSymbol';
-import { GLOBALS, MachineSymbols } from '../globals';
+import { Container } from "pixi.js";
+import { MachineSymbol } from "./MachineSymbol";
+import { GLOBALS, MachineSymbols } from "../globals";
 import { gsap } from "gsap";
-import { wait } from '../utils';
+import { wait } from "../utils";
 
 export class Reel extends Container {
-
     private symbols: MachineSymbol[];
 
     private spinState: {
@@ -15,7 +14,7 @@ export class Reel extends Container {
         spinOutcome: MachineSymbols[];
         spinOutcomeStartingSymbol?: MachineSymbol;
         texturesSwapsCount: number;
-    }
+    };
 
     constructor(x: number) {
         super();
@@ -27,7 +26,7 @@ export class Reel extends Container {
             spinOutcome: [],
             spinOutcomeStartingSymbol: undefined,
             texturesSwapsCount: 0
-        }
+        };
 
         this.initializeSymbols();
 
@@ -39,7 +38,7 @@ export class Reel extends Container {
             for (let i = 0; i < this.symbols.length; i++) {
                 this.symbols[i].y += this.spinState.spinningSpeed * dt;
             }
-            this.symbols.forEach(symbol => {
+            this.symbols.forEach((symbol) => {
                 if (symbol.y > 500) {
                     const index = this.symbols.indexOf(symbol);
                     if (index === 0) {
@@ -57,27 +56,34 @@ export class Reel extends Container {
                         this.spinState.spinOutcomeStartingSymbol = symbol;
                     }
 
-                    let nextTexture = this.spinState.spinOutcome.pop() ?? this.getRandomMachineSymbol();
+                    let nextTexture =
+                        this.spinState.spinOutcome.pop() ??
+                        this.getRandomMachineSymbol();
                     symbol.setTexture(nextTexture);
                     this.spinState.texturesSwapsCount++;
                 }
-            })
+            });
 
-            if (this.spinState.stopping && this.spinState.spinOutcomeStartingSymbol.y > 200) {
+            if (
+                this.spinState.stopping &&
+                this.spinState.spinOutcomeStartingSymbol.y > 200
+            ) {
                 this.spinState.stopping = false;
                 this.handleReelStopping();
             }
         }
     }
 
-
-
-    public async spin(outcome: MachineSymbols[], duration: number = 500): Promise<void> {
+    public async spin(
+        outcome: MachineSymbols[],
+        duration: number = 500
+    ): Promise<void> {
         if (this.spinState.inProgress) {
             return;
         }
         this.spinState.spinOutcome = [...outcome];
         this.spinState.inProgress = true;
+
         await new Promise<void>((resolve) => {
             gsap.to(this.spinState, {
                 spinningSpeed: 100,
@@ -86,12 +92,9 @@ export class Reel extends Container {
                 onComplete: () => {
                     resolve();
                 }
-            })
+            });
         });
-
-
         await wait(duration);
-
         await this.stopSpin();
     }
 
@@ -103,7 +106,7 @@ export class Reel extends Container {
         this.spinState.stopping = true;
 
         return new Promise<void>((resolve) => {
-            this.once('spin-stop', () => {
+            this.once("spin-stop", () => {
                 resolve();
             });
         });
@@ -117,33 +120,43 @@ export class Reel extends Container {
 
         const promises: Promise<void>[] = [];
         for (let i = 0; i < this.symbols.length; i++) {
-            promises.push(new Promise<void>((resolve) => {
-                gsap.to(this.symbols[i], {
-                    y: i * GLOBALS.REEL_SYMBOL_SPACING - 2 * GLOBALS.REEL_SYMBOL_SPACING,
-                    duration: 0.25,
-                    ease: "back.out",
-                    onComplete: () => {
-                        resolve();
-                    }
+            promises.push(
+                new Promise<void>((resolve) => {
+                    gsap.to(this.symbols[i], {
+                        y:
+                            i * GLOBALS.REEL_SYMBOL_SPACING -
+                            2 * GLOBALS.REEL_SYMBOL_SPACING,
+                        duration: 0.25,
+                        ease: "back.out",
+                        onComplete: () => {
+                            resolve();
+                        }
+                    });
                 })
-            }))
+            );
         }
         await Promise.all(promises);
-        this.emit('spin-stop');
+        this.emit("spin-stop");
     }
 
     private initializeSymbols(): void {
         this.symbols = [];
 
-
         for (let i = 0; i < 5; i++) {
-            const symbol = new MachineSymbol(0, i * GLOBALS.REEL_SYMBOL_SPACING - 2 * GLOBALS.REEL_SYMBOL_SPACING, this.getRandomMachineSymbol());
+            const symbol = new MachineSymbol(
+                0,
+                i * GLOBALS.REEL_SYMBOL_SPACING -
+                    2 * GLOBALS.REEL_SYMBOL_SPACING,
+                this.getRandomMachineSymbol()
+            );
             this.symbols.push(symbol);
             this.addChild(symbol);
         }
     }
 
     private getRandomMachineSymbol(): MachineSymbols {
-        return GLOBALS.SYMBOLS[Math.floor(Math.random() * GLOBALS.SYMBOLS.length)]
+        return GLOBALS.SYMBOLS[
+            Math.floor(Math.random() * GLOBALS.SYMBOLS.length)
+        ];
     }
 }

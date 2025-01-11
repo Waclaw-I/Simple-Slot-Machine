@@ -1,0 +1,15 @@
+{
+    "env": {
+        "browser": true,
+        "es6": true,
+        "node": true
+    },
+    "parserOptions": {
+        "ecmaVersion": "latest",
+        "sourceType": "module"
+    },
+    "rules": {
+        "indent": ["error", 4, { "SwitchCase": 1 }],
+        "comma-dangle": ["error", "never"]
+    }
+}

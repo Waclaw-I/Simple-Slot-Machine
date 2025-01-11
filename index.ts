@@ -18,6 +18,11 @@ class MainScene extends Container {
         this.addChild(background);
 
         this.machine = new Machine();
+
+
+
+
+        
         this.machine.position.set(screen.width * 0.5, screen.height * 0.5);
         this.addChild(this.machine);
 

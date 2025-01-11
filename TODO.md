@@ -1,7 +1,6 @@
 - Simple state machine for Machine
 - make a delay for showing the last reel i there's a chance for combo
-- add a simple ui for setting up results
 - add some particle effects for symbols
 - add money rain on bigger combos
-- add a machine background from somewhere, maybe generate it
-- remove backward diagonal results
+- sort results to show biggest first
+- loop results infinitely

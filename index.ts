@@ -72,6 +72,35 @@ class Game {
     });
     document.body.appendChild(app.canvas);
 
+    // Function to resize canvas while maintaining aspect ratio
+    function resizeCanvas() {
+        // Get available space
+        const availableWidth = window.innerWidth;
+        const availableHeight = window.innerHeight;
+
+        // Calculate aspect ratio
+        const aspectRatio = app.view.width / app.view.height;
+
+        // Calculate new dimensions
+        let newWidth = availableWidth;
+        let newHeight = availableWidth / aspectRatio;
+
+        if (newHeight > availableHeight) {
+            newHeight = availableHeight;
+            newWidth = availableHeight * aspectRatio;
+        }
+
+        // Apply new dimensions to canvas
+        app.view.style.width = `${newWidth}px`;
+        app.view.style.height = `${newHeight}px`;
+    }
+
+    // Initial resize
+    resizeCanvas();
+
+    // Handle window resizing
+    window.addEventListener("resize", resizeCanvas);
+
     const game = new Game();
     await game.initialize(app, urls);
 

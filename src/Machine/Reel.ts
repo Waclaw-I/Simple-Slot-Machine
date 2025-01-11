@@ -75,7 +75,7 @@ export class Reel extends Container {
     }
 
     public getSymbol(index: number): MachineSymbol {
-        return this.symbols[index];
+        return this.symbols[index + 1];
     }
 
     public async spin(

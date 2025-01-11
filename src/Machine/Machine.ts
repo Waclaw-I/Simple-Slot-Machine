@@ -45,7 +45,6 @@ export class Machine extends Container {
         if (this.state === MachineState.Spinning) {
             return;
         }
-        console.log(winningResults);
         this.state = MachineState.Spinning;
         const promises: Promise<void>[] = [];
         for (let i = 0; i < 5; i++) {
@@ -55,10 +54,24 @@ export class Machine extends Container {
         await Promise.all(promises);
         // either show results or idle if there were no winning symbols
         this.state = MachineState.ShowingResults;
+        for (const result of winningResults) {
+            await this.highlightResult(result);
+        }
+        this.state = MachineState.Idle;
     }
 
     public isSpinning(): boolean {
         return this.state === MachineState.Spinning;
+    }
+
+    private async highlightResult(
+        result: { x: number; y: number }[]
+    ): Promise<void> {
+        const promises: Promise<void>[] = [];
+        for (const { x, y } of result) {
+            promises.push(this.reels[x].getSymbol(y).bump());
+        }
+        await Promise.all(promises);
     }
 
     private initializeReelsBackground(): void {

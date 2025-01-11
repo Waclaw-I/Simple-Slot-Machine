@@ -29,10 +29,10 @@ export class MachineSymbol extends Container {
                 duration: 0.5,
                 repeat: 1,
                 yoyo: true,
-                ease: "back.out"
-                // onComplete: () => {
-                //     resolve();
-                // }
+                ease: "back.out",
+                onComplete: () => {
+                    resolve();
+                }
             });
         });
     }

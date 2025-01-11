@@ -1,10 +1,9 @@
-import { Container, Sprite } from 'pixi.js';
+import { Container, Sprite } from "pixi.js";
 
 /**
  * Not named simply "Symbol" due to js Symbols
  */
 export class MachineSymbol extends Container {
-
     private image: Sprite;
 
     constructor(x: number, y: number, textureKey: string) {

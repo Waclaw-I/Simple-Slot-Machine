@@ -1,16 +1,15 @@
-import {Container, Graphics, Sprite} from "pixi.js";
-import { Reel } from './Reel';
-import { GLOBALS, MachineSymbols } from '../globals';
-import { wait } from '../utils';
+import { Container, Graphics, Sprite } from "pixi.js";
+import { Reel } from "./Reel";
+import { GLOBALS, MachineSymbols } from "../globals";
+import { wait } from "../utils";
 
 export enum MachineState {
-    Idle = 'idle',
-    Spinning = 'spinning',
-    ShowingResults = 'showingResults',
+    Idle = "idle",
+    Spinning = "spinning",
+    ShowingResults = "showingResults"
 }
 
 export class Machine extends Container {
-
     private reelsBackground: Sprite;
     private reels: Reel[];
     private reelsMask: Graphics;
@@ -26,12 +25,15 @@ export class Machine extends Container {
     }
 
     update(dt: number): void {
-        this.reels.forEach(reel => {
+        this.reels.forEach((reel) => {
             reel.update(dt);
-        })
+        });
     }
 
-    public async spin(outcome: MachineSymbols[][], winningResults: { x: number, y: number }[][]): Promise<void> {
+    public async spin(
+        outcome: MachineSymbols[][],
+        winningResults: { x: number; y: number }[][]
+    ): Promise<void> {
         if (this.state === MachineState.Spinning) {
             return;
         }
@@ -52,7 +54,7 @@ export class Machine extends Container {
     }
 
     private initializeReelsBackground(): void {
-        this.reelsBackground = Sprite.from('reels_base');
+        this.reelsBackground = Sprite.from("reels_base");
         this.reelsBackground.anchor.set(0.5);
 
         this.addChild(this.reelsBackground);

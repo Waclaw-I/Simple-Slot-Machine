@@ -1,17 +1,16 @@
-import {Container, Sprite} from "pixi.js";
+import { Container, Sprite } from "pixi.js";
 
 export enum SpinButtonEvent {
-    Clicked = 'clicked'
+    Clicked = "clicked"
 }
 export class SpinButton extends Container {
-
     private button: Sprite;
 
     private state: "idle" | "hover" | "pressed" | "disabled" = "idle";
     constructor() {
         super();
 
-        this.button = Sprite.from('spin_btn_normal');
+        this.button = Sprite.from("spin_btn_normal");
         this.button.anchor.set(0.5);
         this.button.interactive = true;
         this.addChild(this.button);
@@ -22,26 +21,25 @@ export class SpinButton extends Container {
     public update(dt: number): void {}
 
     private bindEventHandlers(): void {
-        this.button.on('pointerdown', () => {
+        this.button.on("pointerdown", () => {
             if (this.state === "disabled") {
                 return;
             }
             this.changeState("pressed");
         });
-        this.button.on('pointerup', () => {
+        this.button.on("pointerup", () => {
             if (this.state === "disabled") {
                 return;
             }
             this.emit(SpinButtonEvent.Clicked);
-
         });
-        this.button.on('pointerover', () => {
+        this.button.on("pointerover", () => {
             if (this.state === "disabled") {
                 return;
             }
             this.changeState("hover");
         });
-        this.button.on('pointerout', () => {
+        this.button.on("pointerout", () => {
             if (this.state === "disabled") {
                 return;
             }
@@ -57,7 +55,9 @@ export class SpinButton extends Container {
         }
     }
 
-    private changeState(state: "idle" | "hover" | "pressed" | "disabled"): void {
+    private changeState(
+        state: "idle" | "hover" | "pressed" | "disabled"
+    ): void {
         if (this.state === state) {
             return;
         }

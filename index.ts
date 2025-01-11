@@ -1,9 +1,9 @@
-import { Application, Assets, Sprite, Container } from 'pixi.js';
+import { Application, Assets, Sprite, Container } from "pixi.js";
 import { Machine } from "./src/Machine/Machine";
 import { urls } from "./img";
 import { SpinButton, SpinButtonEvent } from "./src/SpinButton";
-import { GLOBALS, MachineSymbols } from './src/globals';
-import { Outcome } from './src/Outcome';
+import { GLOBALS, MachineSymbols } from "./src/globals";
+import { Outcome } from "./src/Outcome";
 
 const screen = GLOBALS.SCREEN;
 
@@ -14,15 +14,11 @@ class MainScene extends Container {
     constructor() {
         super();
 
-        const background = Sprite.from('background');
+        const background = Sprite.from("background");
         this.addChild(background);
 
         this.machine = new Machine();
 
-
-
-
-        
         this.machine.position.set(screen.width * 0.5, screen.height * 0.5);
         this.addChild(this.machine);
 
@@ -43,25 +39,28 @@ class MainScene extends Container {
             if (this.machine.isSpinning()) {
                 return;
             }
-            const { outcome, winningResults} = Outcome.resolve(/*this.getPredefinedSpin() */)
+            const { outcome, winningResults } =
+                Outcome.resolve(/*this.getPredefinedSpin() */);
             this.spinButton.lock(true);
             await this.machine.spin(outcome, winningResults);
             this.spinButton.lock(false);
         });
     }
-    
+
     private getPredefinedSpin(): MachineSymbols[][] {
         return this.transposeMatrix([
             ["high1", "high1", "high1", "high1", "high1"],
             // ["high1", "high1", "high1", "high1", "high1"],
             // ["high1", "high1", "high1", "high1", "high1"],
             ["low1", "low2", "high1", "low3", "low4"],
-            ["low1", "high1", "low4", "low4", "low4"],
+            ["low1", "high1", "low4", "low4", "low4"]
         ]);
     }
 
     private transposeMatrix(matrix: MachineSymbols[][]): MachineSymbols[][] {
-        return matrix[0].map((_, colIndex) => matrix.map(row => row[colIndex]));
+        return matrix[0].map((_, colIndex) =>
+            matrix.map((row) => row[colIndex])
+        );
     }
 }
 
@@ -82,7 +81,7 @@ class Game {
 
 (async () => {
     const app = new Application();
-    await app.init({width: screen.width, height: screen.height});
+    await app.init({ width: screen.width, height: screen.height });
     document.body.appendChild(app.canvas);
 
     const game = new Game();
@@ -91,7 +90,7 @@ class Game {
     const main = new MainScene();
     game.setScene(main);
 
-    app.ticker.add(({deltaTime}) => {
+    app.ticker.add(({ deltaTime }) => {
         main.update(deltaTime);
     });
 })();

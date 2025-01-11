@@ -4,6 +4,7 @@ import { urls } from "./img";
 import { SpinButton, SpinButtonEvent } from "./src/SpinButton";
 import { GLOBALS, MachineSymbols } from "./src/globals";
 import { Outcome } from "./src/Outcome";
+import createDebugPanel from "./src/debugPanel";
 
 const screen = GLOBALS.SCREEN;
 
@@ -14,8 +15,7 @@ class MainScene extends Container {
     constructor() {
         super();
 
-        const background = Sprite.from("background");
-        this.addChild(background);
+        createDebugPanel();
 
         this.machine = new Machine();
 
@@ -81,7 +81,11 @@ class Game {
 
 (async () => {
     const app = new Application();
-    await app.init({ width: screen.width, height: screen.height });
+    await app.init({
+        width: screen.width,
+        height: screen.height,
+        backgroundAlpha: 0
+    });
     document.body.appendChild(app.canvas);
 
     const game = new Game();

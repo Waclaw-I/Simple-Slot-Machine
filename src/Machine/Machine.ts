@@ -37,16 +37,18 @@ export class Machine extends Container {
         }
         console.log(winningResults);
         this.state = MachineState.Spinning;
+        const promises: Promise<void>[] = [];
         for (let i = 0; i < 5; i++) {
-            (async () => {
-                await this.reels[i].startSpinning(outcome[i]);
-                await wait(500);
-                this.reels[i].beginStoppingSpin();
-            })();
+            promises.push(this.reels[i].spin(outcome[i], 500));
             await wait(50);
         }
+        await Promise.all(promises);
         // either show results or idle if there were no winning symbols
         this.state = MachineState.ShowingResults;
+    }
+
+    public isSpinning(): boolean {
+        return this.state === MachineState.Spinning;
     }
 
     private initializeReelsBackground(): void {

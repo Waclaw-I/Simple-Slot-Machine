@@ -11,6 +11,7 @@ import spin_btn_normal from './spin_btn_normal.png'
 import spin_btn_down from './spin_btn_down.png'
 import spin_btn_hover from './spin_btn_hover.png'
 import spin_btn_over from './spin_btn_over.png'
+import spin_btn_disabled  from './spin_btn_disabled.png'
 
 const img = {
     reels_base,
@@ -18,6 +19,7 @@ const img = {
     spin_btn_down,
     spin_btn_hover,
     spin_btn_over,
+    spin_btn_disabled,
     high1,
     high2,
     high3,

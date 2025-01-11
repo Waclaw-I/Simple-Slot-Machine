@@ -34,9 +34,14 @@ class MainScene extends Container {
     }
 
     private bindEventHandlers(): void {
-        this.spinButton.on(SpinButtonEvent.Pressed, () => {
+        this.spinButton.on(SpinButtonEvent.Clicked, async () => {
+            if (this.machine.isSpinning()) {
+                return;
+            }
             const { outcome, winningResults} = Outcome.resolve(/*this.getPredefinedSpin() */)
-            this.machine.spin(outcome, winningResults);
+            this.spinButton.lock(true);
+            await this.machine.spin(outcome, winningResults);
+            this.spinButton.lock(false);
         });
     }
     

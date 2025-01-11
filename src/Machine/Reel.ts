@@ -2,6 +2,7 @@ import { Container } from 'pixi.js';
 import { MachineSymbol } from './MachineSymbol';
 import { GLOBALS, MachineSymbols } from '../globals';
 import { gsap } from "gsap";
+import { wait } from '../utils';
 
 export class Reel extends Container {
 
@@ -64,32 +65,20 @@ export class Reel extends Container {
 
             if (this.spinState.stopping && this.spinState.spinOutcomeStartingSymbol.y > 200) {
                 this.spinState.stopping = false;
-                this.spinState.inProgress = false;
-                this.spinState.texturesSwapsCount = 0;
-                this.spinState.spinningSpeed = 0;
-                this.spinState.spinOutcomeStartingSymbol = undefined;
-
-                for (let i = 0; i < this.symbols.length; i++) {
-                    gsap.to(this.symbols[i], {
-                        y: i * GLOBALS.REEL_SYMBOL_SPACING - 2 * GLOBALS.REEL_SYMBOL_SPACING,
-                        duration: 0.25,
-                        ease: "back.out"
-                    })
-                    // this.symbols[i].y = i * GLOBALS.REEL_SYMBOL_SPACING - 2 * GLOBALS.REEL_SYMBOL_SPACING;
-                }
+                this.handleReelStopping();
             }
         }
     }
 
 
 
-    public async startSpinning(outcome: MachineSymbols[]): Promise<void> {
+    public async spin(outcome: MachineSymbols[], duration: number = 500): Promise<void> {
         if (this.spinState.inProgress) {
             return;
         }
         this.spinState.spinOutcome = [...outcome];
         this.spinState.inProgress = true;
-        return new Promise<void>((resolve) => {
+        await new Promise<void>((resolve) => {
             gsap.to(this.spinState, {
                 spinningSpeed: 100,
                 duration: 0.5,
@@ -98,15 +87,49 @@ export class Reel extends Container {
                     resolve();
                 }
             })
-        })
+        });
+
+
+        await wait(duration);
+
+        await this.stopSpin();
     }
 
-    public beginStoppingSpin(): void {
+    private async stopSpin(): Promise<void> {
         if (!this.spinState.inProgress) {
             return;
         }
 
         this.spinState.stopping = true;
+
+        return new Promise<void>((resolve) => {
+            this.once('spin-stop', () => {
+                resolve();
+            });
+        });
+    }
+
+    private async handleReelStopping(): Promise<void> {
+        this.spinState.inProgress = false;
+        this.spinState.texturesSwapsCount = 0;
+        this.spinState.spinningSpeed = 0;
+        this.spinState.spinOutcomeStartingSymbol = undefined;
+
+        const promises: Promise<void>[] = [];
+        for (let i = 0; i < this.symbols.length; i++) {
+            promises.push(new Promise<void>((resolve) => {
+                gsap.to(this.symbols[i], {
+                    y: i * GLOBALS.REEL_SYMBOL_SPACING - 2 * GLOBALS.REEL_SYMBOL_SPACING,
+                    duration: 0.25,
+                    ease: "back.out",
+                    onComplete: () => {
+                        resolve();
+                    }
+                })
+            }))
+        }
+        await Promise.all(promises);
+        this.emit('spin-stop');
     }
 
     private initializeSymbols(): void {

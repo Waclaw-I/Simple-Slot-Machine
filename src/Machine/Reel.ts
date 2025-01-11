@@ -78,6 +78,12 @@ export class Reel extends Container {
         return this.symbols[index + 1];
     }
 
+    public stopHighlightImmediately(): void {
+        for (const symbol of this.symbols) {
+            symbol.stopHighlightImmediately();
+        }
+    }
+
     public async spin(
         outcome: MachineSymbols[],
         duration: number = 500

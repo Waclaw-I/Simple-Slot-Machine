@@ -24,12 +24,6 @@ export class Machine extends Container {
         this.initializeReelsMask();
         this.initializeReels();
         this.initializeMachineFront();
-
-        window.addEventListener("keydown", (event) => {
-            if (event.key === "Enter") {
-                this.reels[0].getSymbol(2).bump();
-            }
-        });
     }
 
     update(dt: number): void {
@@ -46,6 +40,8 @@ export class Machine extends Container {
             return;
         }
         this.state = MachineState.Spinning;
+        this.stopShowingResults();
+
         const promises: Promise<void>[] = [];
         for (let i = 0; i < 5; i++) {
             promises.push(this.reels[i].spin(outcome[i], 500));
@@ -54,14 +50,26 @@ export class Machine extends Container {
         await Promise.all(promises);
         // either show results or idle if there were no winning symbols
         this.state = MachineState.ShowingResults;
-        for (const result of winningResults) {
-            await this.highlightResult(result);
-        }
-        this.state = MachineState.Idle;
+        this.showResults(winningResults);
     }
 
     public isSpinning(): boolean {
         return this.state === MachineState.Spinning;
+    }
+
+    private async showResults(
+        winningResults: { x: number; y: number }[][]
+    ): Promise<void> {
+        if (this.state !== MachineState.ShowingResults) {
+            return;
+        }
+        for (const result of winningResults) {
+            await this.highlightResult(result);
+            await wait(150);
+        }
+        if (this.state === MachineState.ShowingResults) {
+            this.showResults(winningResults);
+        }
     }
 
     private async highlightResult(
@@ -69,9 +77,15 @@ export class Machine extends Container {
     ): Promise<void> {
         const promises: Promise<void>[] = [];
         for (const { x, y } of result) {
-            promises.push(this.reels[x].getSymbol(y).bump());
+            promises.push(this.reels[x].getSymbol(y).highlight());
         }
         await Promise.all(promises);
+    }
+
+    private stopShowingResults(): void {
+        for (const reel of this.reels) {
+            reel.stopHighlightImmediately();
+        }
     }
 
     private initializeReelsBackground(): void {

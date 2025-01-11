@@ -7,6 +7,8 @@ import { Container, Sprite } from "pixi.js";
 export class MachineSymbol extends Container {
     private image: Sprite;
 
+    private highlightAnimationTween?: gsap.core.Tween;
+
     constructor(x: number, y: number, textureKey: string) {
         super();
 
@@ -21,9 +23,9 @@ export class MachineSymbol extends Container {
         this.image.texture = Sprite.from(textureKey).texture;
     }
 
-    public async bump(): Promise<void> {
+    public async highlight(): Promise<void> {
         return new Promise<void>((resolve) => {
-            gsap.to(this.image.scale, {
+            this.highlightAnimationTween = gsap.to(this.image.scale, {
                 x: 1.3,
                 y: 1.3,
                 duration: 0.5,
@@ -35,5 +37,12 @@ export class MachineSymbol extends Container {
                 }
             });
         });
+    }
+
+    public stopHighlightImmediately(): void {
+        if (this.highlightAnimationTween) {
+            this.highlightAnimationTween.kill();
+            this.image.scale.set(1);
+        }
     }
 }

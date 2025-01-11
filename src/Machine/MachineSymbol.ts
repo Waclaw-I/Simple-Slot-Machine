@@ -8,11 +8,18 @@ export class MachineSymbol extends Container {
     private image: Sprite;
 
     private highlightAnimationTween?: gsap.core.Tween;
+    private blurred: boolean = false;
+
+    private textureKey: string;
+    private textureKeyBlurred: string;
 
     constructor(x: number, y: number, textureKey: string) {
         super();
 
         this.image = Sprite.from(textureKey);
+        this.textureKey = textureKey;
+        this.textureKeyBlurred = `${textureKey}_blurred`;
+        this;
         this.x = x;
         this.y = y;
         this.image.anchor.set(0.5);
@@ -20,7 +27,17 @@ export class MachineSymbol extends Container {
     }
 
     public setTexture(textureKey: string): void {
-        this.image.texture = Sprite.from(textureKey).texture;
+        this.textureKey = textureKey;
+        this.image.texture = Sprite.from(
+            this.blurred ? this.textureKeyBlurred : this.textureKey
+        ).texture;
+    }
+
+    public blur(blur = true): void {
+        this.blurred = blur;
+        this.image.texture = Sprite.from(
+            this.blurred ? this.textureKeyBlurred : this.textureKey
+        ).texture;
     }
 
     public async highlight(): Promise<void> {

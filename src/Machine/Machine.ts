@@ -2,6 +2,7 @@ import { Container, Graphics, Sprite } from "pixi.js";
 import { Reel } from "./Reel";
 import { GLOBALS, MachineSymbols } from "../globals";
 import { wait } from "../utils";
+import { debugPanelProperties } from "../debugPanel";
 
 export enum MachineState {
     Idle = "idle",
@@ -44,13 +45,23 @@ export class Machine extends Container {
 
         const promises: Promise<void>[] = [];
         for (let i = 0; i < 5; i++) {
-            promises.push(this.reels[i].spin(outcome[i], 500));
-            await wait(50);
+            promises.push(
+                this.reels[i].spin(
+                    outcome[i],
+                    debugPanelProperties.spinDuration
+                )
+            );
+            await wait(debugPanelProperties.reelStopDelay);
         }
         await Promise.all(promises);
-        // either show results or idle if there were no winning symbols
-        this.state = MachineState.ShowingResults;
-        this.showResults(winningResults);
+        if (winningResults.length === 0) {
+            this.state = MachineState.Idle;
+        } else {
+            this.state = MachineState.ShowingResults;
+            this.showResults(
+                winningResults.sort((x, y) => y.length - x.length)
+            );
+        }
     }
 
     public isSpinning(): boolean {

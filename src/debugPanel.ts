@@ -14,10 +14,14 @@ export type DebugPanelOutcome =
 
 export interface DebugPanelProperties {
     outcome: DebugPanelOutcome;
+    spinDuration: number;
+    reelStopDelay: number;
 }
 
 export const debugPanelProperties: DebugPanelProperties = {
-    outcome: "random"
+    outcome: "random",
+    spinDuration: 500,
+    reelStopDelay: 50
 };
 
 // TODO: remove this reduncancy with type somehow?
@@ -103,10 +107,11 @@ function transposeMatrix(matrix: MachineSymbols[][]): MachineSymbols[][] {
 
 export function createDebugPanel(): void {
     const gui = new dat.GUI();
-    gui.add(debugPanelProperties, "outcome", outcomeOptions)
-        .name("Outcome")
-        .onChange((value) => {
-            console.log(`selected: ${value}`);
-        });
-    gui.add;
+    gui.add(debugPanelProperties, "outcome", outcomeOptions).name("Outcome");
+    gui.add(debugPanelProperties, "spinDuration", 350, 2500)
+        .name("Spin Duration")
+        .step(1);
+    gui.add(debugPanelProperties, "reelStopDelay", 50, 250)
+        .name("Reel Stop Delay")
+        .step(1);
 }

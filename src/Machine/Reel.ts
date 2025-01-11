@@ -104,7 +104,13 @@ export class Reel extends Container {
                 }
             });
         });
+        this.symbols.forEach((symbol) => {
+            symbol.blur(true);
+        });
         await wait(duration);
+        this.symbols.forEach((symbol) => {
+            symbol.blur(false);
+        });
         await this.stopSpin();
     }
 

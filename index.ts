@@ -79,7 +79,7 @@ class Game {
         const availableHeight = window.innerHeight;
 
         // Calculate aspect ratio
-        const aspectRatio = app.view.width / app.view.height;
+        const aspectRatio = app.canvas.width / app.canvas.height;
 
         // Calculate new dimensions
         let newWidth = availableWidth;
@@ -91,8 +91,8 @@ class Game {
         }
 
         // Apply new dimensions to canvas
-        app.view.style.width = `${newWidth}px`;
-        app.view.style.height = `${newHeight}px`;
+        app.canvas.style.width = `${newWidth}px`;
+        app.canvas.style.height = `${newHeight}px`;
     }
 
     // Initial resize

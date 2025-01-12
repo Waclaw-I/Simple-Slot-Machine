@@ -1,5 +1,7 @@
+import { debugPanelProperties } from "../debugPanel";
 import { GLOBALS, MachineSymbols } from "../globals";
 import { LinesResults } from "./LinesResults";
+import { WaysToWinResults } from "./WaysToWinResults";
 
 export interface ResultsStrategy {
     getWinningResults: (
@@ -7,18 +9,27 @@ export interface ResultsStrategy {
     ) => { x: number; y: number }[][];
 }
 
+export type ResultStrategyType = "lines" | "waysToWin";
+
 export class Outcome {
     constructor() {}
 
     private static readonly COLS: number = 5;
     private static readonly ROWS: number = 3;
 
-    private static strategy: ResultsStrategy = new LinesResults(
-        this.COLS,
-        this.ROWS
-    );
+    private static strategies: { [key: string]: ResultsStrategy } = {
+        lines: new LinesResults(this.COLS, this.ROWS),
+        waysToWin: new WaysToWinResults(this.COLS, this.ROWS)
+    };
 
-    static resolve(predefinedOutcome?: MachineSymbols[][]): {
+    private static strategy: ResultsStrategy =
+        this.getResultsStrategy("waysToWin");
+
+    public static changeStrategy(strategy: ResultStrategyType): void {
+        this.strategy = this.getResultsStrategy(strategy);
+    }
+
+    public static resolve(predefinedOutcome?: MachineSymbols[][]): {
         outcome: MachineSymbols[][];
         winningResults: { x: number; y: number }[][];
     } {
@@ -45,5 +56,11 @@ export class Outcome {
             outcome,
             winningResults: this.strategy.getWinningResults(outcome)
         };
+    }
+
+    private static getResultsStrategy(
+        strategy: ResultStrategyType
+    ): ResultsStrategy {
+        return this.strategies[strategy];
     }
 }

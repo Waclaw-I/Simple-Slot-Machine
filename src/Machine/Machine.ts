@@ -12,9 +12,9 @@ export enum MachineState {
 
 export class Machine extends Container {
     private reelsBackground: Sprite;
-    private machineFront: Sprite;
     private reels: Reel[];
     private reelsMask: Graphics;
+    private machineFront: Sprite;
 
     private state: MachineState = MachineState.Idle;
 
@@ -43,6 +43,25 @@ export class Machine extends Container {
         this.state = MachineState.Spinning;
         this.stopShowingResults();
 
+        await this.playSpinReelsAnimation(outcome);
+
+        if (winningResults.length === 0) {
+            this.state = MachineState.Idle;
+        } else {
+            this.state = MachineState.ShowingResults;
+            this.showResults(
+                winningResults.sort((x, y) => y.length - x.length)
+            );
+        }
+    }
+
+    public canSpin(): boolean {
+        return this.state !== MachineState.Spinning;
+    }
+
+    private async playSpinReelsAnimation(
+        outcome: MachineSymbols[][]
+    ): Promise<void> {
         const promises: Promise<void>[] = [];
         for (let i = 0; i < 5; i++) {
             promises.push(
@@ -54,18 +73,6 @@ export class Machine extends Container {
             await wait(debugPanelProperties.reelStopDelay);
         }
         await Promise.all(promises);
-        if (winningResults.length === 0) {
-            this.state = MachineState.Idle;
-        } else {
-            this.state = MachineState.ShowingResults;
-            this.showResults(
-                winningResults.sort((x, y) => y.length - x.length)
-            );
-        }
-    }
-
-    public isSpinning(): boolean {
-        return this.state === MachineState.Spinning;
     }
 
     private async showResults(

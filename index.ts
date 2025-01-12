@@ -3,7 +3,7 @@ import { Machine } from "./src/Machine/Machine";
 import { urls } from "./img";
 import { SpinButton, SpinButtonEvent } from "./src/SpinButton";
 import { GLOBALS } from "./src/globals";
-import { Outcome } from "./src/Outcome";
+import { Outcome } from "./src/Outcome/Outcome";
 import { createDebugPanel, getPredefinedSpin } from "./src/debugPanel";
 
 const screen = GLOBALS.SCREEN;
@@ -36,7 +36,7 @@ class MainScene extends Container {
 
     private bindEventHandlers(): void {
         this.spinButton.on(SpinButtonEvent.Clicked, async () => {
-            if (this.machine.isSpinning()) {
+            if (!this.machine.canSpin()) {
                 return;
             }
             const { outcome, winningResults } =

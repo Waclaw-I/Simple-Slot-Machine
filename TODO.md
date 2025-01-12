@@ -1,4 +1,1 @@
 - Simple state machine for Machine
-- make a delay for showing the last reel i there's a chance for combo
-- add some particle effects for symbols
-- add money rain on bigger combos
